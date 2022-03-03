@@ -2,13 +2,10 @@ from typing import Optional,List
 from fastapi import FastAPI,Response,status,HTTPException,Depends
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from passlib.context import CryptContext
 import time
 from sqlalchemy.orm import Session
-from . import models, schemas
+from . import models, schemas, utils
 from .database import engine, get_db
-
-pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -114,7 +111,7 @@ def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends
 def creat_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     #hash the password
-    hashed_password = pwd_context.hash(user.password)
+    hashed_password = utils.hash(user.password)
     user.password = hashed_password
     new_user = models.User(**user.dict())
     db.add(new_user)
