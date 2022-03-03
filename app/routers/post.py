@@ -4,9 +4,11 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from typing import List
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/posts"
+)
 
-@router.get("/posts",response_model=List[schemas.Post])
+@router.get("/",response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db)):
     # cursor.execute("select * from posts")
     # posts = cursor.fetchall()
@@ -31,7 +33,7 @@ def create_posts(post: schemas.PostCreate,db: Session = Depends(get_db)):
 #     post = my_posts[len(my_posts)-1]
 #     return post
 
-@router.get("/posts/{id}",response_model=schemas.Post)
+@router.get("/{id}",response_model=schemas.Post)
 def get_post(id:int,response:Response,db: Session = Depends(get_db)):
     # cursor.execute(""" select * from posts where id= %s """,(str(id),))
     # post = cursor.fetchone()
@@ -43,7 +45,7 @@ def get_post(id:int,response:Response,db: Session = Depends(get_db)):
         # return {'message': f"Post with id: {id} was not found"}
     return post
 
-@router.delete("/posts/{id}",status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id:int,db: Session = Depends(get_db)):
     # cursor.execute(""" delete from posts where id= %s returning * """,(str(id),))
     # deleted_post = cursor.fetchone()
@@ -60,7 +62,7 @@ def delete_post(id:int,db: Session = Depends(get_db)):
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/posts/{id}",response_model=schemas.Post)
+@router.put("/{id}",response_model=schemas.Post)
 def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db)):
     # cursor.execute(""" update posts set title = %s, content = %s, published = %s where id = %s returning *""",
     #                 (post.title, post.content,post.published,str(id)))
