@@ -1,7 +1,7 @@
 from typing import Optional
-from click import password_option
 from pydantic import BaseModel,EmailStr
 from datetime import datetime
+
 class PostBase(BaseModel):
     title: str
     content: str
